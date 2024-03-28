@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -35,9 +38,37 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _doLogin(BuildContext ctx) {
+  _doLogin(BuildContext ctx) async {
     // validate
     // call api
+    final result = await http.post(
+      Uri.parse('https://api.itdevclub.com/api/login'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'username': 'user1',
+        'password': '123456',
+      }),
+    );
+    final json = jsonDecode(result.body);
+
+    if (json['ok'] == 0) {
+      ScaffoldMessenger.of(ctx)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text('${json['error']}'),
+          duration: Duration(
+            seconds: 10,
+          ),
+        ));
+      return;
+    }
+    // save token
+    // shared_preferences
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', json['token']);
+
     ctx.go('/home');
   }
 }
