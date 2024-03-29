@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+import 'package:student_checkin_app/store/app_store.dart';
 
 class StudentTab extends StatefulWidget {
   StudentTab({super.key});
@@ -12,8 +9,6 @@ class StudentTab extends StatefulWidget {
 }
 
 class _StudentTabState extends State<StudentTab> {
-  final students = [];
-  final std = ChangeNotifier();
   int i = 1;
   final iChanged = ChangeNotifier();
 
@@ -27,7 +22,7 @@ class _StudentTabState extends State<StudentTab> {
     //     'fullname': 'Student $i',
     //   });
     // }
-    _getStudents();
+    // getStudents();
   }
 
   @override
@@ -37,9 +32,9 @@ class _StudentTabState extends State<StudentTab> {
     return Scaffold(
       appBar: AppBar(
         title: ListenableBuilder(
-          listenable: Listenable.merge([std, iChanged]),
+          listenable: Listenable.merge([AppStore.studentsChanged, iChanged]),
           builder: (BuildContext context, Widget? child) {
-            return Text('Student ${students.length} i=$i');
+            return Text('Student ${AppStore.students.length} i=$i');
           },
         ),
         actions: [
@@ -55,40 +50,19 @@ class _StudentTabState extends State<StudentTab> {
         ],
       ),
       body: ListenableBuilder(
-        listenable: std,
+        listenable: AppStore.studentsChanged,
         builder: (context, child) {
           print('list view');
           return ListView.builder(
-            itemCount: students.length,
+            itemCount: AppStore.students.length,
             itemBuilder: (context, index) => ListTile(
               leading: Icon(Icons.star),
-              title: Text('Name=${students[index]['fullname']}'),
-              subtitle: Text('Code=${students[index]['code']}'),
+              title: Text('Name=${AppStore.students[index]['fullname']}'),
+              subtitle: Text('Code=${AppStore.students[index]['code']}'),
             ),
           );
         },
       ),
     );
-  }
-
-  _getStudents() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    print('token=$token');
-
-    final result = await http.get(
-      Uri.parse('https://api.itdevclub.com/api/students'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
-    final json = jsonDecode(result.body);
-    print('student=${json['data']['students']}');
-
-    // students.clear();
-    students.addAll(json['data']['students']);
-    print("students.length=${students.length}");
-    std.notifyListeners();
-    // setState(() {});
   }
 }

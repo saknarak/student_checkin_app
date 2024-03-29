@@ -3,9 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_checkin_app/pages/student_tab.dart';
 import 'package:student_checkin_app/pages/summary_tab.dart';
+import 'package:student_checkin_app/store/app_store.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key}) {
+    AppStore.getStudents();
+  }
 
   @override
   Widget build(BuildContext context) {

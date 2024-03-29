@@ -8,6 +8,11 @@
       "name": "student_checkin_app",
       "request": "launch",
       "type": "dart",
+    },
+    {
+      "name": "student_checkin_app (chrome)",
+      "request": "launch",
+      "type": "dart",
       "program": "lib/main.dart",
       "args": [
         "-d",

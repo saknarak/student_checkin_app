@@ -8,6 +8,7 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   final userCtrl = TextEditingController(text: '');
+  final passCtrl = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,7 @@ class LoginPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          Image.asset('files/logo.png'),
           TextField(
             controller: userCtrl,
             decoration: InputDecoration(
@@ -24,6 +26,7 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           TextField(
+            controller: passCtrl,
             obscureText: true,
             decoration: InputDecoration(
               label: Text('รหัสผ่าน'),
@@ -47,8 +50,8 @@ class LoginPage extends StatelessWidget {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
-        'username': 'user1',
-        'password': '123456',
+        'username': userCtrl.text,
+        'password': passCtrl.text,
       }),
     );
     final json = jsonDecode(result.body);
