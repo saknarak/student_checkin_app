@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:student_checkin_app/store/app_store.dart';
 
 class StudentTab extends StatefulWidget {
@@ -9,8 +10,7 @@ class StudentTab extends StatefulWidget {
 }
 
 class _StudentTabState extends State<StudentTab> {
-  int i = 1;
-  final iChanged = ChangeNotifier();
+  final i = signal(1);
 
   @override
   void initState() {
@@ -31,34 +31,29 @@ class _StudentTabState extends State<StudentTab> {
     // _getStudents();
     return Scaffold(
       appBar: AppBar(
-        title: ListenableBuilder(
-          listenable: Listenable.merge([AppStore.studentsChanged, iChanged]),
-          builder: (BuildContext context, Widget? child) {
-            return Text('Student ${AppStore.students.length} i=$i');
-          },
-        ),
+        title: Watch((BuildContext context) {
+          return Text('Student ${AppStore.students.value.length} i=${i.value}');
+        }),
         actions: [
           IconButton(
             onPressed: () {
-              i++;
-              print('i=$i');
-              iChanged.notifyListeners();
+              i.value++;
+              print('i=${i.value}');
               // setState(() {});
             },
             icon: Icon(Icons.add),
           ),
         ],
       ),
-      body: ListenableBuilder(
-        listenable: AppStore.studentsChanged,
-        builder: (context, child) {
+      body: Watch(
+        (context) {
           print('list view');
           return ListView.builder(
-            itemCount: AppStore.students.length,
+            itemCount: AppStore.students.value.length,
             itemBuilder: (context, index) => ListTile(
               leading: Icon(Icons.star),
-              title: Text('Name=${AppStore.students[index]['fullname']}'),
-              subtitle: Text('Code=${AppStore.students[index]['code']}'),
+              title: Text('Name=${AppStore.students.value[index]['fullname']}'),
+              subtitle: Text('Code=${AppStore.students.value[index]['code']}'),
             ),
           );
         },

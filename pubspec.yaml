@@ -12,6 +12,7 @@ dependencies:
   go_router:
   http: ^1.2.0
   shared_preferences: ^2.2.2
+  signals: ^4.5.1
 
 dev_dependencies:
   flutter_test:

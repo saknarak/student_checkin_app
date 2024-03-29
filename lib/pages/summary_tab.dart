@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:student_checkin_app/store/app_store.dart';
 
 class SummaryTab extends StatelessWidget {
@@ -10,12 +11,10 @@ class SummaryTab extends StatelessWidget {
       appBar: AppBar(
         title: Text('Summary'),
       ),
-      body: ListenableBuilder(
-        builder: (context, child) {
-          return Text('จำนวนนักเรียนทั้งหมด ${AppStore.students.length} คน');
-        },
-        listenable: AppStore.studentsChanged,
-      ),
+      body: Watch((context) {
+        return Text(
+            'จำนวนนักเรียนทั้งหมด ${AppStore.students.value.length} คน');
+      }),
     );
   }
 }
