@@ -9,6 +9,7 @@ class AppStore {
   // static final students = [];
   // static final studentsChanged = ChangeNotifier();
   static final students = signal([]);
+  static final message = signal('Welcome');
 
   static void getStudents() async {
     final prefs = await SharedPreferences.getInstance();
